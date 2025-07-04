@@ -10,6 +10,9 @@ Designed primarily for students to improve their English writing skills.
 - Provides suggestions for corrections.
 - Disclaimer: This tool may not catch all mistakes.
 
+## Live Demo
+- Too excited to wait [click here](https://maishamagicast.github.io/Grammar-Checker/) 
+
 ## How to Use
 
 1. Open `index.html` in a modern browser.
@@ -27,7 +30,5 @@ Please ensure any new features or fixes align with the project’s educational f
 
 This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
 
-## Author
 
-Your Name — creator and maintainer
 
