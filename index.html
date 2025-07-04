@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Basic Grammar Checker</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 10px;
+    padding-bottom: 60px;
+  }
+  textarea {
+    width: 100%;
+    height: 150px;
+    font-size: 16px;
+  }
+  button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    font-size: 16px;
+  }
+  .highlight {
+    background-color: #ffb3b3;
+    cursor: pointer;
+  }
+  #output {
+    margin-top: 20px;
+    white-space: pre-wrap;
+  }
+  ul {
+    margin-top: 10px;
+    padding-left: 20px;
+  }
+  li {
+    margin-bottom: 10px;
+  }
+  h3 {
+    margin-bottom: 5px;
+  }
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #f9f9f9;
+  border-top: 1px solid #ddd;
+  padding: 10px 0;
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  z-index: 1000;
+}
+
+
+  /* Consent Modal Styles */
+  #consentModal {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  #consentContent {
+    background: white;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 25px;
+    border-radius: 8px;
+    text-align: left;
+    box-shadow: 0 0 15px #0003;
+  }
+  #consentContent h2 {
+    margin-top: 0;
+  }
+  #consentContent p {
+    margin-bottom: 15px;
+  }
+  #consentButtons {
+    margin-top: 20px;
+    text-align: center;
+  }
+  #consentButtons button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+  .modalLink {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* Terms/Privacy modals */
+  .modalOverlay {
+    position: fixed;
+    top:0; left:0; width:100vw; height:100vh;
+    background: rgba(0,0,0,0.7);
+    display:none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+  }
+  .modalBox {
+    background: white;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  .modalBox h2 {
+    margin-top: 0;
+  }
+  .modalClose {
+    margin-top: 15px;
+    display: block;
+    text-align: right;
+  }
+  .modalClose button {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Grammar Checker</h1>
+
+<textarea id="text" placeholder="Type or paste your text here..."></textarea>
+<br />
+<button onclick="checkGrammar()">Check Grammar</button>
+
+<div id="output"></div>
+
+<footer>
+  <p><a class="modalLink" onclick="openModal('termsModal')">Terms of Service</a> | <a class="modalLink" onclick="openModal('privacyModal')">Privacy Policy</a></p>
+  <p><em>Disclaimer: This tool may not catch all mistakes.</em></p>
+</footer>
+
+<!-- Consent Modal -->
+<div id="consentModal">
+  <div id="consentContent">
+    <h2>Welcome!</h2>
+    <p>Before using this Grammar Checker app, please review and agree to our <span class="modalLink" onclick="openModal('termsModal')">Terms of Service</span> and <span class="modalLink" onclick="openModal('privacyModal')">Privacy Policy</span>.</p>
+    <p>By clicking "I Agree", you consent to our terms and privacy practices.</p>
+    <div id="consentButtons">
+      <button id="agreeBtn">I Agree</button>
+    </div>
+  </div>
+</div>
+
+<!-- Terms of Service Modal -->
+<div id="termsModal" class="modalOverlay">
+  <div class="modalBox">
+    <h2>Terms of Service</h2>
+    <p>Last updated: July 2025</p>
+    <p>Welcome to this Grammar Checker application (“the Service”) provided free of charge. By accessing or using the Service, you agree to be bound by these Terms of Service (“Terms”). If you do not agree to these Terms, do not use the Service.</p>
+    <h3>Use of Service</h3>
+    <p>The Service is intended for educational and personal use only. You agree not to misuse the Service or attempt to disrupt it.</p>
+    <h3>Intellectual Property</h3>
+    <p>All content and code in this application are owned by the developer unless otherwise noted. You may not reproduce or redistribute without permission.</p>
+    <h3>Disclaimer</h3>
+    <p>The Service is provided “as is.” It may not detect all grammar or spelling errors, and should not replace professional advice.</p>
+    <h3>Limitation of Liability</h3>
+    <p>In no event shall the developer be liable for any damages arising from use or inability to use the Service.</p>
+    <h3>Changes to Terms</h3>
+    <p>We may update these Terms at any time by posting the revised version on this page.</p>
+    <div class="modalClose"><button onclick="closeModal('termsModal')">Close</button></div>
+  </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div id="privacyModal" class="modalOverlay">
+  <div class="modalBox">
+    <h2>Privacy Policy</h2>
+    <p>Last updated: July 2025</p>
+    <p>This app does not store or collect personal data. The only data processed is the text you enter, which is sent temporarily to a third-party grammar checking API for analysis and is not saved.</p>
+    <h3>Data Collection</h3>
+    <p>We do not collect any personal information.</p>
+    <h3>Data Usage</h3>
+    <p>Text input is processed only to provide grammar checking results and is not stored on any servers.</p>
+    <h3>Third-Party Services</h3>
+    <p>The grammar checking API is a third-party service; please review their privacy policies.</p>
+    <h3>Cookies</h3>
+    <p>This site uses browser storage (localStorage) solely to remember your agreement to these terms.</p>
+    <h3>Children’s Privacy</h3>
+    <p>This Service is not intended for children under 13 years of age.</p>
+    <div class="modalClose"><button onclick="closeModal('privacyModal')">Close</button></div>
+  </div>
+</div>
+
+<script>
+  // Escape HTML entities
+  function escapeHTML(text) {
+    return text.replace(/[&<>"']/g, function (match) {
+      const escapeMap = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      };
+      return escapeMap[match];
+    });
+  }
+
+  // Safely insert highlights for matches in the original text
+  function highlightText(text, matches) {
+    let highlighted = '';
+    let currentIndex = 0;
+
+    matches.sort((a, b) => a.offset - b.offset);
+
+    matches.forEach(match => {
+      highlighted += escapeHTML(text.substring(currentIndex, match.offset));
+      const errorText = escapeHTML(text.substr(match.offset, match.length));
+      highlighted += `<span class="highlight" title="${escapeHTML(match.message)}">${errorText}</span>`;
+      currentIndex = match.offset + match.length;
+    });
+
+    highlighted += escapeHTML(text.substring(currentIndex));
+    return highlighted;
+  }
+
+  async function checkGrammar() {
+    const text = document.getElementById('text').value.trim();
+    const output = document.getElementById('output');
+    output.innerHTML = 'Checking... please wait.';
+
+    if (!text) {
+      output.textContent = 'Please enter some text.';
+      return;
+    }
+
+    try {
+      const response = await fetch('https://api.languagetool.org/v2/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          text: text,
+          language: 'en-US'
+        })
+      });
+
+      const data = await response.json();
+
+      if (!data.matches || data.matches.length === 0) {
+        output.textContent = 'No issues found! Your text looks good.';
+        return;
+      }
+
+      const highlightedText = highlightText(text, data.matches);
+
+      let suggestionsHTML = '<h3>Suggestions:</h3><ul>';
+      data.matches.forEach(match => {
+        const message = escapeHTML(match.message);
+        const replacement = match.replacements.length > 0 ? escapeHTML(match.replacements[0].value) : 'No suggestion available';
+        const errorText = escapeHTML(text.substr(match.offset, match.length));
+        suggestionsHTML += `<li><strong>Error:</strong> "${errorText}" — ${message}. <br><strong>Suggestion:</strong> ${replacement}</li>`;
+      });
+      suggestionsHTML += '</ul>';
+
+      output.innerHTML = highlightedText + suggestionsHTML;
+
+    } catch (error) {
+      output.textContent = 'Error checking text. Please try again later.';
+      console.error(error);
+    }
+  }
+
+  // Consent modal logic
+  const consentModal = document.getElementById('consentModal');
+  const agreeBtn = document.getElementById('agreeBtn');
+
+  if (!localStorage.getItem('userAgreed')) {
+    consentModal.style.display = 'flex';
+    // Disable textarea and button until agreed
+    document.getElementById('text').disabled = true;
+    document.querySelector('button[onclick="checkGrammar()"]').disabled = true;
+  } else {
+    consentModal.style.display = 'none';
+  }
+
+  agreeBtn.onclick = () => {
+    localStorage.setItem('userAgreed', 'true');
+    consentModal.style.display = 'none';
+    document.getElementById('text').disabled = false;
+    document.querySelector('button[onclick="checkGrammar()"]').disabled = false;
+  };
+
+  // Modal open/close for Terms and Privacy
+  function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
+  }
+  function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
